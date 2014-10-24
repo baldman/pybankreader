@@ -1,7 +1,11 @@
-from __future__ import absolute_import
 from . import types
-from base import RecordMeta
 import six
+
+
+class RecordMeta(type):
+
+    def __new__(mcs, *args, **kwargs):
+        return mcs
 
 
 class HeaderRecord(six.with_metaclass(RecordMeta, object)):

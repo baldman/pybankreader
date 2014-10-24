@@ -12,7 +12,7 @@ setup(
                 'from various internet banking solutions. Currently supports '
                 'BBF and GPC files (just subsets of those for the time being)',
     long_description=__doc__,
-    packages=['bankdata_reader'],
+    packages=['pybankreader'],
     include_package_data=True,
     zip_safe=False,
     platforms='any',

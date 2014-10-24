@@ -1,3 +1,6 @@
 **.pyc
 .idea
 resources
+pybankreader.egg-info
+.tox
+docs/_*

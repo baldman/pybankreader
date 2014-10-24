@@ -1,6 +1,6 @@
 import pytest
-from bbf_reader.exceptions import ValidationError
-from bbf_reader.types import Field, IntegerField, CharField, RegexField, \
+from pybankreader.exceptions import ValidationError
+from pybankreader.types import Field, IntegerField, CharField, RegexField, \
     TimestampField
 
 

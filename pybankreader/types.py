@@ -1,7 +1,6 @@
-from __future__ import absolute_import
 from datetime import datetime
 import re
-from bbf_reader.exceptions import ValidationError
+from .exceptions import ValidationError
 
 
 class Field(object):
@@ -184,5 +183,5 @@ class TimestampField(Field):
             datetime.strptime(value, self._format)
         except ValueError as e:
             msg = "Value '{}' cannot be parsed to date using format '{}'. " \
-                  "Error is: {}".format(value, self._format, e.message)
+                  "Error is: {}".format(value, self._format, str(e))
             raise ValidationError(self._field_name, msg)
