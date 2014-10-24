@@ -9,3 +9,18 @@ class ValidationError(Exception):
     def __init__(self, field, message):
         self.field = field
         self.message = message
+
+    def __str__(self):
+        return "{}: {}".format(self.field, self.message)
+
+
+class InvalidRecordError(Exception):
+    """
+    Exception wrapping the situation
+    """
+
+    position = None
+    record = None
+
+    def __init__(self, position, record, field):
+        pass

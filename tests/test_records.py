@@ -78,6 +78,8 @@ def test_descriptor_clash():
     record1 = TestRecord()
     record2 = TestRecord2()
 
+    assert record1.first_field is None
+
     record1.second_field = '123'
     record2.second_field = '345'
 
@@ -88,3 +90,23 @@ def test_descriptor_clash():
 
     assert record1.second_field == 123
     assert record2.second_field == 345
+
+
+def test_record_load():
+    """
+    Test the ability of the record instance to load data properly
+    """
+    record = TestRecord()
+
+    # Default load
+    assert record.first_field is None
+    assert record.second_field is None
+
+    # # Valid load
+    # value = 'AA1234'
+    # record.load(value)
+    #
+    # # Invalid load
+    # value = 'whatever'
+    # with pytest.raises():
+    #     record.load(value)

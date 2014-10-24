@@ -13,26 +13,33 @@ class FieldProxy(object):
     The actual field object we're proxying to
     """
 
+    _data = None
+    """
+    Dictionary of instance->value map
+    """
+
     def __init__(self, field_obj):
         """
-        Initialize the decriptor with pointer to the obejct
+        Initialize the decriptor with pointer to the obejct.
 
         :param Field field_obj: The actual field object we're proxying to
         :return:
         """
         self._field_obj = field_obj
+        self._data = {}
 
     def __get__(self, instance, owner):
         """
-        Bypas the instance, we're interested in the field object
+        Fetch the actual value from the data dictionary
         """
-        return self._field_obj.value
+        return self._data.get(instance, None)
 
     def __set__(self, instance, value):
         """
-        Bypas the instance, we're interested in the field object
+        Use the field object to normalize the input and save it
         """
         self._field_obj.value = value
+        self._data[instance] = self._field_obj.value
 
 
 class RecordBase(type):
