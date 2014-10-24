@@ -1,33 +1,75 @@
-from . import types
 import six
+from pybankreader.fields import Field
 
 
-class RecordMeta(type):
+class FieldProxy(object):
+    """
+    A decriptor class for fields. This essentially creates a proxy to
+    attributes. Beware of weird class-level like behavior of descriptors
+    """
 
-    def __new__(mcs, *args, **kwargs):
-        return mcs
+    _field_obj = None
+    """
+    The actual field object we're proxying to
+    """
+
+    def __init__(self, field_obj):
+        """
+        Initialize the decriptor with pointer to the obejct
+
+        :param Field field_obj: The actual field object we're proxying to
+        :return:
+        """
+        self._field_obj = field_obj
+
+    def __get__(self, instance, owner):
+        """
+        Bypas the instance, we're interested in the field object
+        """
+        return self._field_obj.value
+
+    def __set__(self, instance, value):
+        """
+        Bypas the instance, we're interested in the field object
+        """
+        self._field_obj.value = value
 
 
-class HeaderRecord(six.with_metaclass(RecordMeta, object)):
+class RecordBase(type):
+    """
+    The record metaclass. Mainly sets up Field proxy descriptors on Field
+    instances (class attributes)
+    """
 
-    bank_app = types.RegexField(regex="T", length=1, required=True)
-    app_id = types.CharField(length=8, required=True)
-    edi_msg = types.RegexField(regex="HEADER", length=6, required=True)
-    separator = types.RegexField(reqex="\w", length=1, required=True)
-    rec_typ = types.RegexField(regex="00", length=2, required=True)
-    app_ver = types.RegexField(regex="[0-9]{2}\.[0-9]{4}", length=7,
-                               required=True)
-    app_brand = types.RegexField(regex="BBCSOB|XHBPS", length=6, required=True)
+    def __new__(mcs, klazz, bases, attrs):
+        """
+        The metaclass method
+
+        :return: class
+        """
+        # Do this only on subclasses of BaseRecord
+        parents = [b for b in bases if isinstance(b, RecordBase)]
+        if not parents:
+            # It's something else, so go ahead
+            return super(RecordBase, mcs).__new__(mcs, klazz, bases, attrs)
+
+        # Do our magic with fields
+        for name, field_obj in six.iteritems(attrs):
+            if isinstance(field_obj, Field):
+                attrs.pop(name)
+                field_obj.field_name = name
+                attrs[name] = FieldProxy(field_obj)
+
+        klazz_inst = super(RecordBase, mcs).__new__(mcs, klazz, bases, attrs)
+        return klazz_inst
 
 
-class LockRecord(six.with_metaclass(RecordMeta, object)):
+class Record(six.with_metaclass(RecordBase)):
+    """
+    The base Record class. Any record definition should use this one, since
+    it allows for the smooth definition via class attributes and adds some
+    facade methods to load those records
+    """
 
-    bank_app = types.RegexField(regex="T", length=1, required=True)
-    app_id = types.CharField(length=8, required=True)
-    edi_msg = types.RegexField(regex="LOCK", length=6, required=True)
-    separator = types.RegexField(regex="\w", length=1, required=True)
-    rec_typ = types.RegexField(regex="99", length=2, required=True)
-    count = types.IntegerField(length=13, required=True)
-    timestamp = types.TimestampField(format="%y%m%d%H%M%S", length=12,
-                                     required=True)
-    seq_no = types.IntegerField(length=9, required=True)
+    def __init__(self):
+        pass

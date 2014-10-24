@@ -1,6 +1,6 @@
 import pytest
 from pybankreader.exceptions import ValidationError
-from pybankreader.types import Field, IntegerField, CharField, RegexField, \
+from pybankreader.fields import Field, IntegerField, CharField, RegexField, \
     TimestampField
 
 
