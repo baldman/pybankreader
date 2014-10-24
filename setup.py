@@ -2,15 +2,15 @@
 from setuptools import setup
 
 setup(
-    name='bankdata_reader',
+    name='pybankreader',
     version='0.1',
-    url='http://github.com/baldman/bankdata_reader',
+    url='http://github.com/baldman/pybankreader',
     license='BSD',
     author=u'Tomáš Plešek',
     author_email='tomas@plesek.cz',
     description='A library & micro-framework for reading data files exported '
                 'from various internet banking solutions. Currently supports '
-                'BBF and GPC files (just subsets of those)',
+                'BBF and GPC files (just subsets of those for the time being)',
     long_description=__doc__,
     packages=['bankdata_reader'],
     include_package_data=True,
