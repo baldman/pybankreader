@@ -12,17 +12,20 @@ class Field(object):
 
     _field_name = None
     _value = None
+    _position = None
 
     length = None
     required = None
 
-    def __init__(self, length, required):
+    def __init__(self, position, length, required):
         """
         Initialize the field
 
+        :param int position: position in the record for correct traversal
         :param int length: maximum length of the field
         :param bool required: field is required
         """
+        self._position = position
         self.length = length
         self.required = required
 

@@ -61,13 +61,16 @@ class RecordBase(type):
             return super(RecordBase, mcs).__new__(mcs, klazz, bases, attrs)
 
         # Do our magic with fields
+        fields = []
         for name, field_obj in six.iteritems(attrs):
             if isinstance(field_obj, Field):
                 attrs.pop(name)
+                fields.append(name)
                 field_obj.field_name = name
                 attrs[name] = FieldProxy(field_obj)
 
         klazz_inst = super(RecordBase, mcs).__new__(mcs, klazz, bases, attrs)
+        setattr(klazz_inst, '_fields', fields)
         return klazz_inst
 
 

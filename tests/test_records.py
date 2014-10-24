@@ -11,8 +11,8 @@ class TestRecord(Record):
     available
     """
 
-    first_field = fields.CharField(length=2, required=True)
-    second_field = fields.IntegerField(length=4, required=True)
+    first_field = fields.CharField(position=1, length=2, required=True)
+    second_field = fields.IntegerField(position=2, length=4, required=True)
 
 
 class TestRecord2(Record):
@@ -22,8 +22,8 @@ class TestRecord2(Record):
     test class-level attributes descriptor
     """
 
-    first_field = fields.CharField(length=2, required=True)
-    second_field = fields.IntegerField(length=4, required=True)
+    first_field = fields.CharField(position=1, length=2, required=True)
+    second_field = fields.IntegerField(position=2, length=4, required=True)
 
 
 def test_fields_available():
@@ -46,6 +46,7 @@ def test_fields_available():
     for name, field in six.iteritems(flds):
         assert not isinstance(field, fields.Field)
         assert isinstance(field, FieldProxy)
+        assert name in record._fields
 
     # Assert we have defaults
     assert record.first_field is None
