@@ -1,10 +1,11 @@
+import datetime
 import pytest
 from pybankreader.exceptions import ValidationError
 from pybankreader.fields import Field, IntegerField, CharField, RegexField, \
     TimestampField
 
 
-def _generic_field_test(field_instance, ok_value, long_value):
+def _generic_field_test(field_instance, ok_value, long_value, set_value=None):
     """
     As any field is based on the Field class, this can test the same basic
     behavior for all subclases
@@ -12,6 +13,8 @@ def _generic_field_test(field_instance, ok_value, long_value):
     :param Field field_instance: instance of a Field subclass
     :param string ok_value: value that should pass validation
     :param string long_value: value that is longer than allowed
+    :param string set_value: value that should pass validation and be set
+        instead of ok_value, since the value may be re-cast by the field
     :return:
     """
     field_instance.field_name = 'test_field'
@@ -27,7 +30,10 @@ def _generic_field_test(field_instance, ok_value, long_value):
     assert e.value.message == exp_message
 
     # Test ok value and non-required field value
-    field_instance.value = ok_value
+    if set_value:
+        field_instance.value = set_value
+    else:
+        field_instance.value = ok_value
     assert str(field_instance.value) == ok_value
 
     field_instance.value = empty_value
@@ -71,7 +77,12 @@ def test_integer_field():
 
 def test_timestamp_field():
     fld = TimestampField("%y%m%d%H%M%S", position=1, length=12, required=False)
-    _generic_field_test(fld, '140902070922', '1409020709222')
+
+    ok_value = str(datetime.datetime(
+        year=2014, month=9, day=2, hour=7, minute=9, second=22
+    ))
+
+    _generic_field_test(fld, ok_value, '1409020709222', '140902070922')
     with pytest.raises(ValidationError) as e:
         fld.value = "whatever"
     assert e.value.field == 'test_field'
@@ -79,4 +90,3 @@ def test_timestamp_field():
           "'%y%m%d%H%M%S'. Error is: time data 'whatever' does not match " \
           "format '%y%m%d%H%M%S'"
     assert e.value.message == msg
-

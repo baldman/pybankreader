@@ -8,7 +8,7 @@ class HeaderRecord(records.Record):
     app_id = fields.CharField(position=2, length=8, required=True)
     edi_msg = fields.RegexField(position=3, regex="HEADER", length=6,
                                 required=True)
-    separator = fields.RegexField(position=4, reqex="\w", length=1,
+    separator = fields.RegexField(position=4, regex="\s", length=1,
                                   required=True)
     rec_typ = fields.RegexField(position=5, regex="00", length=2,
                                 required=True)
@@ -25,7 +25,7 @@ class LockRecord(records.Record):
     app_id = fields.CharField(position=2, length=8, required=True)
     edi_msg = fields.RegexField(position=3, regex="LOCK", length=6,
                                 required=True)
-    separator = fields.RegexField(position=4, regex="\w", length=1,
+    separator = fields.RegexField(position=4, regex="\s", length=1,
                                   required=True)
     rec_typ = fields.RegexField(position=5, regex="99", length=2,
                                 required=True)

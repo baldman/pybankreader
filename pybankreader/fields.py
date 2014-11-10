@@ -166,7 +166,7 @@ class IntegerField(RegexField):
         :param list args: args
         :param dict kwargs: kwargs
         """
-        super(IntegerField, self).__init__(regex="^\d+$", *args, **kwargs)
+        super(IntegerField, self).__init__(regex="^\s*\d+$", *args, **kwargs)
 
     def _set_value(self, value):
         """
@@ -200,7 +200,7 @@ class TimestampField(Field):
         if not len(value):
             return
         try:
-            datetime.strptime(value, self._format)
+            self._value = datetime.strptime(value, self._format)
         except ValueError as e:
             msg = "Value '{}' cannot be parsed to date using format '{}'. " \
                   "Error is: {}".format(value, self._format, str(e))

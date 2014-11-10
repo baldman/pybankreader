@@ -8,4 +8,4 @@ def header_record():
 
 @pytest.fixture
 def lock_record():
-    return "T263310  LOCK   99            0140902070922        0"
+    return "T363914  LOCK   99            0140902070922       11"
