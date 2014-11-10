@@ -26,7 +26,7 @@ class BBFMetadata(object):
 
     _timestamp = None
     """
-    Timestamp of the wile -- when the report was generated
+    Timestamp of the file -- when the report was generated
     """
 
     _seq_id = None

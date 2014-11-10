@@ -42,8 +42,7 @@ class Field(object):
         elif self._position < other._position:
             return -1
         else:
-            msg = "You cannot have two fields with the same position " \
-                  "({}/{})".format(self.field_name, other.field_name)
+            msg = "You cannot have two fields with the same position"
             raise RuntimeError(msg)
 
     def _set_value(self, value):
@@ -53,6 +52,7 @@ class Field(object):
         :param value: The value to be stored in the field
         :raises ValidationError: Value is not valid
         """
+        value = value.strip()
         if self.required and not len(value):
             raise ValidationError(
                 self._field_name, "A value is required for this field"
@@ -143,7 +143,7 @@ class RegexField(Field):
         :raises ValidationError: Value is not valid
         """
         super(RegexField, self)._set_value(value)
-        if not len(value):
+        if self._value is None:
             return
 
         if re.match(self._regex, value) is None:
@@ -176,7 +176,7 @@ class IntegerField(RegexField):
         :raises ValidationError: Value is not valid
         """
         super(IntegerField, self)._set_value(value)
-        if not len(value):
+        if self._value is None:
             return
         self._value = int(self._value)
 
@@ -197,7 +197,7 @@ class TimestampField(Field):
         Setter for the value, parses the input to datetime object
         """
         super(TimestampField, self)._set_value(value)
-        if not len(value):
+        if self._value is None:
             return
         try:
             self._value = datetime.strptime(value, self._format)
