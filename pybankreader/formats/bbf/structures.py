@@ -1,11 +1,12 @@
+from .records import HeaderRecord, LockRecord, AdvmulRecord, AdvmuzRecord
+
 
 class Report(object):
     pass
 
 
 class Advmul(Report):
-    pass
 
-
-class Finsta(Report):
-    pass
+    header = HeaderRecord
+    data = [AdvmulRecord, AdvmuzRecord]
+    lock = LockRecord
