@@ -62,12 +62,16 @@ class RecordBase(type):
 
         # Do our magic with fields
         fields = []
-        for name, field_obj in six.iteritems(attrs):
-            if isinstance(field_obj, Field):
-                attrs.pop(name)
-                fields.append(name)
-                field_obj.field_name = name
-                attrs[name] = FieldProxy(field_obj)
+        real_attrs = filter(
+            lambda x: True if isinstance(x[1], Field) else False,
+            six.iteritems(attrs)
+        )
+
+        for name, field_obj in sorted(real_attrs, key=lambda x: x[1]):
+            attrs.pop(name)
+            fields.append(field_obj)
+            field_obj.field_name = name
+            attrs[name] = FieldProxy(field_obj)
 
         klazz_inst = super(RecordBase, mcs).__new__(mcs, klazz, bases, attrs)
         setattr(klazz_inst, '_fields', fields)
@@ -81,5 +85,25 @@ class Record(six.with_metaclass(RecordBase)):
     facade methods to load those records
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, initial=None):
+        """
+        The constructor will optionally load the data immediately on
+        construction.
+
+        :param string initial: Data to be loaded by the record immediately on
+            construction
+        """
+        if initial:
+            self.load(initial)
+
+    def load(self, data):
+        """
+        Parses the data using fields and loads it inside the record
+
+        :param string data: Data to be loaded by the record
+        """
+        current_position = 0
+        for field in self._fields:
+            load_data = data[current_position:field.length]
+            setattr(self, field.field_name, load_data)
+            current_position += field.length

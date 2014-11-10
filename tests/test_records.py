@@ -46,7 +46,7 @@ def test_fields_available():
     for name, field in six.iteritems(flds):
         assert not isinstance(field, fields.Field)
         assert isinstance(field, FieldProxy)
-        assert name in record._fields
+        assert field._field_obj in record._fields
 
     # Assert we have defaults
     assert record.first_field is None
@@ -93,6 +93,19 @@ def test_descriptor_clash():
     assert record2.second_field == 345
 
 
+def test_bad_record():
+    """
+    Test we cannot instantiate bad record class
+    """
+    with pytest.raises(RuntimeError):
+
+        class TestBadRecord(Record):
+            first_field = fields.CharField(position=1, length=2,
+                                           required=True)
+            second_field = fields.IntegerField(position=1, length=4,
+                                               required=True)
+
+
 def test_record_load():
     """
     Test the ability of the record instance to load data properly
@@ -104,10 +117,10 @@ def test_record_load():
     assert record.second_field is None
 
     # # Valid load
-    # value = 'AA1234'
-    # record.load(value)
-    #
-    # # Invalid load
-    # value = 'whatever'
-    # with pytest.raises():
-    #     record.load(value)
+    value = 'AA1234'
+    record.load(value)
+
+    # Invalid load
+    value = 'whatever'
+    with pytest.raises(ValidationError):
+        record.load(value)

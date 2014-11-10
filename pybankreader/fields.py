@@ -29,6 +29,23 @@ class Field(object):
         self.length = length
         self.required = required
 
+    def __cmp__(self, other):
+        """
+        Compare with other fields by position
+
+        :param other: Field
+        :return integer: negative if self < other, positive if self > other
+        :raises RuntimeError: self == other
+        """
+        if self._position > other._position:
+            return 1
+        elif self._position < other._position:
+            return -1
+        else:
+            msg = "You cannot have two fields with the same position " \
+                  "({}/{})".format(self.field_name, other.field_name)
+            raise RuntimeError(msg)
+
     def _set_value(self, value):
         """
         When the value is being set, we run validations!
