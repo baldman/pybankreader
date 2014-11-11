@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 import re
 from .exceptions import ValidationError
 
@@ -166,7 +167,7 @@ class IntegerField(RegexField):
         :param list args: args
         :param dict kwargs: kwargs
         """
-        super(IntegerField, self).__init__(regex="^\s*\d+$", *args, **kwargs)
+        super(IntegerField, self).__init__("^\s*-?\d+\s*$", *args, **kwargs)
 
     def _set_value(self, value):
         """
@@ -179,6 +180,37 @@ class IntegerField(RegexField):
         if self._value is None:
             return
         self._value = int(self._value)
+
+
+class DecimalField(RegexField):
+    """
+    Decimal is just a special-case regex, so the field is implemented this way.
+    Mind that when you're using decimal, the overall length of the field must
+    count with the decimal dot!
+    """
+
+    def __init__(self, *args, **kwargs):
+        """
+        Initializes the parent RegexField with integer regex
+
+        :param list args: args
+        :param dict kwargs: kwargs
+        """
+        super(DecimalField, self).__init__(
+            "^\s*-?\d+(\.\d+)?\s*$", *args, **kwargs
+        )
+
+    def _set_value(self, value):
+        """
+        Setter for the value, creates a Decimal object
+
+        :param string value: The value to be stored in the field
+        :raises ValidationError: Value is not valid
+        """
+        super(DecimalField, self)._set_value(value)
+        if self._value is None:
+            return
+        self._value = Decimal(self._value)
 
 
 class TimestampField(Field):

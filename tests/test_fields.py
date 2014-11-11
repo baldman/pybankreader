@@ -1,8 +1,9 @@
 import datetime
+from decimal import Decimal
 import pytest
 from pybankreader.exceptions import ValidationError
 from pybankreader.fields import Field, IntegerField, CharField, RegexField, \
-    TimestampField
+    TimestampField, DecimalField
 
 
 def _generic_field_test(field_instance, ok_value, long_value, set_value=None):
@@ -18,7 +19,7 @@ def _generic_field_test(field_instance, ok_value, long_value, set_value=None):
     :return:
     """
     field_instance.field_name = 'test_field'
-    empty_value=''
+    empty_value = ''
 
     # Test long value
     with pytest.raises(ValidationError) as e:
@@ -71,8 +72,19 @@ def test_regex_field():
 
 
 def test_integer_field():
-    fld = IntegerField(position=1, length=2, required=False)
-    _generic_field_test(fld, '19', '199')
+    fld = IntegerField(position=1, length=3, required=False)
+    _generic_field_test(fld, '19', '1999')
+    fld.value = '-19'
+    assert fld.value == -19
+
+
+def test_decimal_field():
+    fld = DecimalField(position=1, length=6, required=False)
+    _generic_field_test(fld, '13.54', '1234.56')
+    fld.value = '13.54'
+    assert fld.value == Decimal('13.54')
+    fld.value = '-13.54'
+    assert fld.value == Decimal('-13.54')
 
 
 def test_timestamp_field():
