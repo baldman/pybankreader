@@ -1,27 +1,147 @@
+import six
+from exceptions import ValidationError, ConfigurationError
+from records import Record
 
 
-class Report(object):
+class ReportBase(type):
 
-    _source = None
-    """
-    The source file-like object to read from
-    """
+    def __new__(mcs, klazz, bases, attrs):
+        # Do this only on subclasses of Report
+        parents = [b for b in bases if isinstance(b, ReportBase)]
+        if not parents:
+            # It's something else, so go ahead
+            return super(ReportBase, mcs).__new__(mcs, klazz, bases, attrs)
+
+        # The filter for weeding out things that don't interest us
+        def filter_records(x):
+            """
+            Filter out things that are not record fields. This applies to
+            litst, that have instances of something else than Record
+            """
+            if isinstance(x[1], Record):
+                return True
+            if isinstance(x[1], list):
+                for x in x[1]:
+                    if not isinstance(x, Record):
+                        return False
+                return True
+            return False
+
+        real_attrs = filter(filter_records, six.iteritems(attrs))
+
+        # Prepare the stub for `process_<field>_` methods
+        def _process_stub(self, record):
+            return record
+
+        # Add hint methods, so they can indicate that a field should advance
+        def _field_hint(self, line):
+            return True
+
+        methods = {}
+        record_list = []
+        records = {}
+
+        for name, record_klazz in sorted(real_attrs, key=lambda x: x[1]):
+            attrs.pop(name)
+            methods["process_{}".format(name)] = _process_stub
+            methods["hint_{}".format(name)] = _field_hint
+            records[name] = record_klazz
+            attrs[name] = None
+            record_list.append(name)
+
+        # Check that we have at least one record
+        if not len(record_list):
+            msg = "Your report '{}' must have at least one record". \
+                format(klazz)
+            raise ConfigurationError(msg)
+
+        # Create the class isntance
+        klazz_inst = super(ReportBase, mcs).__new__(mcs, klazz, bases, attrs)
+
+        # Add `process` and `hint` methods
+        for name, pointer in six.iteritems(methods):
+            setattr(klazz_inst, name, pointer)
+
+        # Add the assembled records
+        setattr(klazz_inst, '_record_map', records)
+        setattr(klazz_inst, '_record_list', record_list)
+        return klazz_inst
+
+
+class Report(six.with_metaclass(ReportBase, object)):
 
     data = None
+    """
+    The actual data field. All reports will have at least this one defined.
+    """
 
-    def __init__(self, file_like):
-        self._source = file_like
-        self.data = []
+    def __init__(self, file_like=None):
+        """
+        The constructor handles initialization of any list fields, that may be
+        defined. Optionally, it can take the file-like to read from directly
 
-    def __getitem__(self, item):
-        return self.data[item]
+        :param file_like: the file from which to read data
+        """
+        for key, record_klazz in six.iteritems(self._record_map):
+            if isinstance(record_klazz, list):
+                setattr(self, key, [])
 
-    def __iter__(self):
-        for record in self.data:
-            yield record
+        # If no data field is defined, make it a list anyway
+        self.data = self.data or []
+        if file_like:
+            self.load(file_like)
 
-    def __len__(self):
-        return len(self.data)
+    def load(self, file_like):
+        """
+        Read individual records and assign them to proper instance fields, as
+        they go. When the system cannot parse a record, we advance to the next
+        record type first, before we raise an exception indicating that the
+        report is invalid.
+        """
+        curr_record_idx = 0
+        while True:
+            line = file_like.readline()
+            if not line:
+                break
 
-    def _load(self):
-        pass
+            # We need to handle the iteration of the record classes
+            while True:
+                curr_record = self._record_list[curr_record_idx]
+                record_obj = self._record_map[curr_record]
+                is_list = isinstance(record_obj, list)
+                if is_list:
+                    record_obj = record_obj[0]
+                try:
+                    # First, check the hint method
+                    okay = getattr(self, 'hint_{}'.format(curr_record))(line)
+
+                    # The hint tells us, that we need to advance, so let's do
+                    # that by raising ValidationError directly
+                    if not okay:
+                        msg = "{} hint says that I should advance".\
+                            format(curr_record)
+                        raise ValidationError('__hint__', msg)
+
+                    print ">>> KLAZZ: {}".format(record_obj)
+                    record = record_obj.load(line.strip())
+                    print ">>> RECORD: {}".format(record)
+                except ValidationError as validation_error:
+                    try:
+                        self._record_list[curr_record_idx+1]
+                    except IndexError:
+                        # Nope, this is the end and we're out of here
+                        raise validation_error
+                    else:
+                        # Okay, there is hope, since there is another record
+                        # in the record list
+                        curr_record_idx += 1
+                else:
+                    break
+
+            # If the datum is supposed to be in a list, we need to put it there
+            # as such. Otherwise, just set the attribute
+            if is_list:
+                data_list = getattr(self, curr_record)
+                data_list.append(record)
+            else:
+                setattr(self, curr_record, record)

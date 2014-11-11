@@ -78,12 +78,18 @@ class RecordBase(type):
         return klazz_inst
 
 
-class Record(six.with_metaclass(RecordBase)):
+class Record(six.with_metaclass(RecordBase, object)):
     """
     The base Record class. Any record definition should use this one, since
     it allows for the smooth definition via class attributes and adds some
-    facade methods to load those records
+    facade methods to load those records.
+
+    Also, it uses the same trick as Field to mainatin it's relative position
+    inside the Report class
     """
+
+    _creation_counter = 0
+    _position = None
 
     def __init__(self, initial=None):
         """
@@ -93,8 +99,26 @@ class Record(six.with_metaclass(RecordBase)):
         :param string initial: Data to be loaded by the record immediately on
             construction
         """
+        # We set the position from the static attribute, since otherwise, we
+        # would not have a way how to fetch the instance one
+        self._position = Record._creation_counter
+        Record._creation_counter += 1
         if initial:
             self.load(initial)
+
+    def __lt__(self, other):
+        """
+        Compare with other records by position
+
+        :param other: Record
+        :return bool: True if self < other, False if self > other
+        :raises RuntimeError: self == other (which should not ever happen)
+        """
+        if self._position == other._position:
+            msg = "You cannot have two fields with the same position"
+            raise RuntimeError(msg)
+
+        return self._position < other._position
 
     def load(self, data):
         """

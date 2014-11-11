@@ -24,3 +24,9 @@ class InvalidRecordError(Exception):
 
     def __init__(self, position, record, field):
         pass
+
+
+class ConfigurationError(Exception):
+    """
+    Exception signifies a programmers error in setting up the reports
+    """

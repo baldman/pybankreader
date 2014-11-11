@@ -1,1 +1,1 @@
-from .bbf.reader import BBFFile  # NOQA
+from .bbf.reports import Advmul as BBFAdvmul  # NOQA

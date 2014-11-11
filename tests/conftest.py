@@ -49,6 +49,7 @@ def advmuz_record():
            "                                                          SHARZ" \
            "BCCZPP"
 
+
 @pytest.fixture
 def advmul_report():
     return "T263310  HEADER 0001.0000BBCSOB" \
@@ -86,3 +87,8 @@ def advmul_report():
            "4          Albatros Media a.s.                                  " \
            "                                        T263310  LOCK   99      " \
            "      0141002091008        0"
+
+
+@pytest.fixture
+def mock_report():
+    return "AB1234\nfirst     \nsecond    \nZZ9911"

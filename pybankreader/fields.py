@@ -42,7 +42,7 @@ class Field(object):
 
         :param other: Field
         :return bool: True if self < other, False if self > other
-        :raises RuntimeError: self == other
+        :raises RuntimeError: self == other (which should not ever happen)
         """
         if self._position == other._position:
             msg = "You cannot have two fields with the same position"
