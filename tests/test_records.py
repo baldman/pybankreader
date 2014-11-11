@@ -11,8 +11,8 @@ class TestRecord(Record):
     available
     """
 
-    first_field = fields.CharField(position=1, length=2, required=True)
-    second_field = fields.IntegerField(position=2, length=4, required=True)
+    first_field = fields.CharField(length=2, required=True)
+    second_field = fields.IntegerField(length=4, required=True)
 
 
 class TestRecord2(Record):
@@ -22,8 +22,8 @@ class TestRecord2(Record):
     test class-level attributes descriptor
     """
 
-    first_field = fields.CharField(position=1, length=2, required=True)
-    second_field = fields.IntegerField(position=2, length=4, required=True)
+    first_field = fields.CharField(length=2, required=True)
+    second_field = fields.IntegerField(length=4, required=True)
 
 
 def test_fields_available():
@@ -91,19 +91,6 @@ def test_descriptor_clash():
 
     assert record1.second_field == 123
     assert record2.second_field == 345
-
-
-def test_bad_record():
-    """
-    Test we cannot instantiate bad record class
-    """
-    with pytest.raises(RuntimeError):
-
-        class TestBadRecord(Record):
-            first_field = fields.CharField(position=1, length=2,
-                                           required=True)
-            second_field = fields.IntegerField(position=1, length=4,
-                                               required=True)
 
 
 def test_record_load():

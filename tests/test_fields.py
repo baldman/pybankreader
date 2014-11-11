@@ -50,17 +50,17 @@ def _generic_field_test(field_instance, ok_value, long_value, set_value=None):
 
 
 def test_base_field():
-    fld = Field(position=1, length=6, required=False)
+    fld = Field(length=6, required=False)
     _generic_field_test(fld, "haha", "hahahaha")
 
 
 def test_char_field():
-    fld = CharField(position=1, length=6, required=False)
+    fld = CharField(length=6, required=False)
     _generic_field_test(fld, "haha", "hahahaha")
 
 
 def test_regex_field():
-    fld = RegexField('^0 1[a-f]+$', position=1, length=5, required=False)
+    fld = RegexField('^0 1[a-f]+$', length=5, required=False)
     _generic_field_test(fld, '0 1ae', '0 1aefaea')
     with pytest.raises(ValidationError) as e:
         fld.value = '0 1az'
@@ -72,14 +72,14 @@ def test_regex_field():
 
 
 def test_integer_field():
-    fld = IntegerField(position=1, length=3, required=False)
+    fld = IntegerField(length=3, required=False)
     _generic_field_test(fld, '19', '1999')
     fld.value = '-19'
     assert fld.value == -19
 
 
 def test_decimal_field():
-    fld = DecimalField(position=1, length=6, required=False)
+    fld = DecimalField(length=6, required=False)
     _generic_field_test(fld, '13.54', '1234.56')
     fld.value = '13.54'
     assert fld.value == Decimal('13.54')
@@ -88,7 +88,7 @@ def test_decimal_field():
 
 
 def test_timestamp_field():
-    fld = TimestampField("%y%m%d%H%M%S", position=1, length=12, required=False)
+    fld = TimestampField("%y%m%d%H%M%S", length=12, required=False)
 
     ok_value = str(datetime.datetime(
         year=2014, month=9, day=2, hour=7, minute=9, second=22

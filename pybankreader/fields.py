@@ -11,6 +11,8 @@ class Field(object):
     classes using these for reference reasons.
     """
 
+    _creation_counter = 0
+
     _field_name = None
     _value = None
     _position = None
@@ -18,15 +20,19 @@ class Field(object):
     length = None
     required = None
 
-    def __init__(self, position, length, required):
+    def __init__(self, length, required):
         """
-        Initialize the field
+        Initialize the field and maintain the creation counter so we don't have
+        to pass position argument
 
-        :param int position: position in the record for correct traversal
         :param int length: maximum length of the field
         :param bool required: field is required
         """
-        self._position = position
+        # We set the position from the static attribute, since otherwise, we
+        # would not have a way how to fetch the instance one
+        self._position = Field._creation_counter
+        Field._creation_counter += 1
+
         self.length = length
         self.required = required
 
