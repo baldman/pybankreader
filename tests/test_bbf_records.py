@@ -1,7 +1,7 @@
 import datetime
 from decimal import Decimal
-from formats.bbf.records import HeaderRecord, LockRecord, AdvmulHeaderRecord, \
-    AdvmulRecord, AdvmuzRecord
+from pybankreader.formats.bbf.records import HeaderRecord, LockRecord, \
+    AdvmulHeaderRecord, AdvmulRecord, AdvmuzRecord
 
 
 def test_header_record(header_record):

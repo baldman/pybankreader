@@ -104,12 +104,6 @@ class Record(six.with_metaclass(RecordBase)):
         """
         current_position = 0
         for field in self._fields:
-            print "DATA for {} / pos: {} len: {} >>> {}".\
-                format(field.field_name,
-                       data[current_position:current_position+field.length],
-                       current_position,
-                       field.length
-                )
             load_data = data[current_position:current_position+field.length]
             setattr(self, field.field_name, load_data)
             current_position += field.length

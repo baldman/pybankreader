@@ -30,21 +30,19 @@ class Field(object):
         self.length = length
         self.required = required
 
-    def __cmp__(self, other):
+    def __lt__(self, other):
         """
         Compare with other fields by position
 
         :param other: Field
-        :return integer: negative if self < other, positive if self > other
+        :return bool: True if self < other, False if self > other
         :raises RuntimeError: self == other
         """
-        if self._position > other._position:
-            return 1
-        elif self._position < other._position:
-            return -1
-        else:
+        if self._position == other._position:
             msg = "You cannot have two fields with the same position"
             raise RuntimeError(msg)
+
+        return self._position < other._position
 
     def _set_value(self, value):
         """

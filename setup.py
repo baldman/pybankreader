@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='pybankreader',
@@ -12,7 +12,7 @@ setup(
                 'from various internet banking solutions. Currently supports '
                 'BBF and GPC files (just subsets of those for the time being)',
     long_description=__doc__,
-    packages=['pybankreader'],
+    packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
     platforms='any',

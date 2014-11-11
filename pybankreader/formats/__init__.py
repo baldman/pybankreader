@@ -1,1 +1,1 @@
-from bbf.reader import BBFFile  # NOQA
+from .bbf.reader import BBFFile  # NOQA
