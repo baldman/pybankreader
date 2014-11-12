@@ -1,5 +1,6 @@
 import datetime
-from pybankreader.formats.gpc.records import AccountRecord, ItemRecord
+from pybankreader.formats.gpc.records import AccountRecord, ItemRecord, \
+    ItemInfoRecord
 
 
 def test_account_record(gpc_account_record):
@@ -52,3 +53,17 @@ def test_item_record(gpc_item_record):
     assert rec.separator == '0'
     assert rec.currency_iso_code == 978
     assert rec.clearance_date == datetime.datetime(2014, 9, 1, 0, 0)
+
+
+def test_iteminfo_record(gpc_iteminfo_record):
+    """
+    Try to load the item info record and test that it actually loads it without
+    exceptions
+    """
+    rec = ItemInfoRecord()
+    rec.load(gpc_iteminfo_record)
+
+    assert rec.header == '076'
+    assert rec.transaction_id == '0000000000000000IBASSR8486'
+    assert rec.date == datetime.datetime(2014, 9, 1, 0, 0)
+    assert rec.comment == '683, 684'
