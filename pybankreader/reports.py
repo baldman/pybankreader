@@ -173,7 +173,6 @@ class Report(six.with_metaclass(ReportBase, object)):
                         )
                     record_obj.load(line.strip())
                 except exceptions.ValidationError as val_error:
-                    print u">>> VALIDATION ERROR: {}".format(val_error)
                     try:
                         if is_list and compound_record.advance():
                             # Okay, we may just need to switch to different

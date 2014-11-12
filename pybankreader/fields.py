@@ -118,9 +118,7 @@ class CharField(Field):
     """
     CharField just uses the Field superclass directly for now, nothing special
     """
-    
-    def _set_value(self, value):
-        super(CharField, self)._set_value(unicode(value))
+    pass
 
 
 class RegexField(Field):
@@ -149,7 +147,6 @@ class RegexField(Field):
         :param strin value: The value to be stored in the field
         :raises ValidationError: Value is not valid
         """
-        value = unicode(value)
         super(RegexField, self)._set_value(value)
         if self._value is None:
             return
