@@ -2,6 +2,11 @@ import pytest
 
 
 @pytest.fixture
+def mock_report():
+    return "AB1234\nfirst     \nsecond    \nZZ9911"
+
+
+@pytest.fixture
 def header_record():
     return "T363914  HEADER 0001.0000BBCSOB"
 
@@ -91,5 +96,27 @@ def advmul_report():
 
 
 @pytest.fixture
-def mock_report():
-    return "AB1234\nfirst     \nsecond    \nZZ9911"
+def gpc_account_record():
+    return "0740000000183861478KRISTIN OLSON LITERA31081400000000645770+0000" \
+           "0000814124+000000030659370000000032342910009300914"
+
+
+@pytest.fixture
+def gpc_item_record():
+    return "0750000000183861478000000000000000010000000060610000002250001000" \
+           "000000000000000003108539408010914Aitken Alexander Ass00978010914"
+
+
+@pytest.fixture
+def gpc_iteminfo_record():
+    return "0760000000000000000IBASSR8486010914683, 684"
+
+
+@pytest.fixture
+def gpc_remmitance1_record():
+    return "0782.250,00 EUR 1,000000              GB85HOAB15980093333120"
+
+
+@pytest.fixture
+def gpc_remmitance2_record():
+    return "079Cause Celeb, Olivia Joules, Slovak Aitken Alexander Associates Ltd."

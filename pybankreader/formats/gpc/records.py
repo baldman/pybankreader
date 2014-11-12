@@ -1,21 +1,93 @@
-from ...records import Record
+from ... import records, fields
 
 
-class AccountRecord(Record):
+class AccountRecord(records.Record):
+
+    BALANCE_SIGNUM = {
+        '+': 1,
+        '-': -1
+    }
+
+    REVENUE_SIGNUM = {
+        '0': 1,
+        '-': -1
+    }
+
+    header = fields.RegexField(length=3, required=True, regex='074')
+    account_no = fields.CharField(length=16, required=True)
+    name = fields.CharField(length=20, required=True)
+    old_balance_date = fields.TimestampField(length=6, required=True,
+                                             format='%d%m%y')
+    old_balance = fields.IntegerField(length=14, required=True)
+    old_balance_signum = fields.RegexField(length=1, required=True,
+                                           regex='\+|\-')
+    new_balance = fields.IntegerField(length=14, required=True)
+    new_balance_signum = fields.RegexField(length=1, required=True,
+                                           regex='\+|\-')
+    revenue_debit = fields.IntegerField(length=14, required=True)
+    revenue_debit_signum = fields.RegexField(length=1, required=True,
+                                             regex='0|\-')
+    revenue_credit = fields.IntegerField(length=14, required=True)
+    revenue_credit_signum = fields.RegexField(length=1, required=True,
+                                              regex='0|\-')
+    seq_no = fields.IntegerField(length=3, required=True)
+    clearance_date = fields.TimestampField(length=6, required=True,
+                                           format='%d%m%y')
+    fill = fields.CharField(length=14, required=False)
+
+
+class ItemRecord(records.Record):
+
+    CURRENCY_CODES = {
+        '0030': 'AUD',
+        '0124': 'CAD',
+        '0756': 'CHF',
+        '0203': 'CZK',
+        '0208': 'DKK',
+        '0978': 'EUR',
+        '0826': 'GBP',
+        '0191': 'HRK',
+        '0348': 'HUF',
+        '0392': 'JPY',
+        '0578': 'NOK',
+        '0554': 'NZD',
+        '0616': 'PLN',
+        '0810': 'RUR',
+        '0752': 'SEK',
+        '0703': 'SKK',
+        '0840': 'USD',
+        '0710': 'ZAR',
+        '0949': 'TRY',
+    }
+
+    header = fields.RegexField(length=3, required=True, regex='075')
+    account_no = fields.CharField(length=16, required=True)
+    account_no_second = fields.CharField(length=16, required=True)
+    record_type = fields.RegexField(length=1, required=True, regex='1|0')
+    file_id = fields.IntegerField(length=3, required=True)
+    file_seq_no = fields.IntegerField(length=3, required=True)
+    seq_no = fields.IntegerField(length=6, required=True)
+    amount = fields.IntegerField(length=12, required=True)
+    accounting_code = fields.RegexField(length=1, required=True,
+                                        regex='1|2|4|5')
+    variable_symbol = fields.IntegerField(length=10, required=True)
+    constant_symbol = fields.IntegerField(length=10, required=True)
+    specific_symbol = fields.IntegerField(length=10, required=True)
+    valuta = fields.IntegerField(length=6, required=True)
+    name = fields.CharField(length=20, required=True)
+    separator = fields.RegexField(length=1, required=True, regex='0')
+    currency_iso_code = fields.IntegerField(length=4, required=True)
+    clearance_date = fields.TimestampField(length=6, required=True,
+                                           format='%d%m%y')
+
+
+class ItemInfoRecord(records.Record):
     pass
 
 
-class ItemRecord(Record):
+class ItemRemmitance1(records.Record):
     pass
 
 
-class ItemInfoRecord(Record):
-    pass
-
-
-class ItemRemmitance1(Record):
-    pass
-
-
-class ItemRemittance2(Record):
+class ItemRemittance2(records.Record):
     pass
