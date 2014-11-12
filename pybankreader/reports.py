@@ -1,9 +1,54 @@
+import inspect
 import six
-from exceptions import ValidationError, ConfigurationError
+
 from records import Record
+import exceptions
+
+
+class CompoundRecord(Record):
+    """
+    A wrapper for a record field that represents a list of records and possibly
+    of multiple types of records. This is mainly required to control the
+    position of individual record attributes in the given report.
+    """
+
+    _records = None
+    _record_iter = 0
+
+    _data = None
+
+    def __init__(self, *args):
+        """
+        Same the records as a list
+
+        :param list args: individual record types
+        """
+        super(CompoundRecord, self).__init__()
+        self._records = args
+        self._data = []
+
+    def advance(self):
+        try:
+            self._records[self._record_iter+1]
+        except IndexError:
+            return False
+        else:
+            self._record_iter += 1
+            return True
+
+    def reset(self):
+        self._record_iter = 0
+
+    def get_record(self):
+        return self._records[self._record_iter]()
 
 
 class ReportBase(type):
+    """
+    The metaclass responsible for creating `hint_<record>` and
+    `process_<record>` fields, as well as instantiating those in correct order
+    and mapping them onto a Report instance.
+    """
 
     def __new__(mcs, klazz, bases, attrs):
         # Do this only on subclasses of Report
@@ -22,7 +67,7 @@ class ReportBase(type):
                 return True
             if isinstance(x[1], list):
                 for x in x[1]:
-                    if not isinstance(x, Record):
+                    if not inspect.isclass(x) or not issubclass(x, Record):
                         return False
                 return True
             return False
@@ -53,14 +98,16 @@ class ReportBase(type):
         if not len(record_list):
             msg = "Your report '{}' must have at least one record". \
                 format(klazz)
-            raise ConfigurationError(msg)
+
+            raise exceptions.ConfigurationError(msg)
 
         # Create the class isntance
         klazz_inst = super(ReportBase, mcs).__new__(mcs, klazz, bases, attrs)
 
-        # Add `process` and `hint` methods
+        # Add `process` and `hint` methods, if they're not defined
         for name, pointer in six.iteritems(methods):
-            setattr(klazz_inst, name, pointer)
+            if not hasattr(klazz_inst, name):
+                setattr(klazz_inst, name, pointer)
 
         # Add the assembled records
         setattr(klazz_inst, '_record_map', records)
@@ -108,9 +155,10 @@ class Report(six.with_metaclass(ReportBase, object)):
             while True:
                 curr_record = self._record_list[curr_record_idx]
                 record_obj = self._record_map[curr_record]
-                is_list = isinstance(record_obj, list)
+                is_list = isinstance(record_obj, CompoundRecord)
                 if is_list:
-                    record_obj = record_obj[0]
+                    compound_record = record_obj
+                    record_obj = record_obj.get_record()
                 try:
                     # First, check the hint method
                     okay = getattr(self, 'hint_{}'.format(curr_record))(line)
@@ -120,14 +168,16 @@ class Report(six.with_metaclass(ReportBase, object)):
                     if not okay:
                         msg = "{} hint says that I should advance".\
                             format(curr_record)
-                        raise ValidationError('__hint__', msg)
-
-                    print ">>> KLAZZ: {}".format(record_obj)
-                    record = record_obj.load(line.strip())
-                    print ">>> RECORD: {}".format(record)
-                except ValidationError as validation_error:
+                        raise exceptions.ValidationError('__hint__', msg)
+                    record_obj.load(line.strip())
+                except exceptions.ValidationError as validation_error:
                     try:
-                        self._record_list[curr_record_idx+1]
+                        if is_list and compound_record.advance():
+                            # Okay, we may just need to switch to different
+                            # record type in the compound record
+                            continue
+                        else:
+                            self._record_list[curr_record_idx+1]
                     except IndexError:
                         # Nope, this is the end and we're out of here
                         raise validation_error
@@ -142,6 +192,8 @@ class Report(six.with_metaclass(ReportBase, object)):
             # as such. Otherwise, just set the attribute
             if is_list:
                 data_list = getattr(self, curr_record)
-                data_list.append(record)
+                data_list.append(record_obj)
+                # The order of records in compound record is non-linear
+                compound_record.reset()
             else:
-                setattr(self, curr_record, record)
+                setattr(self, curr_record, record_obj)

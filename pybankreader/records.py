@@ -1,4 +1,5 @@
 import six
+from exceptions import ValidationError
 from pybankreader.fields import Field
 
 
@@ -122,12 +123,24 @@ class Record(six.with_metaclass(RecordBase, object)):
 
     def load(self, data):
         """
-        Parses the data using fields and loads it inside the record
+        Parses the data using fields and loads it inside the record. If it
+        throws a validation error, we reload initial values back to those
+        fields
 
         :param string data: Data to be loaded by the record
         """
         current_position = 0
-        for field in self._fields:
-            load_data = data[current_position:current_position+field.length]
-            setattr(self, field.field_name, load_data)
-            current_position += field.length
+        previous = {}
+
+        try:
+            for field in self._fields:
+                load_data = data[current_position:current_position+field.length]
+                previous[field.field_name] = getattr(self, field.field_name)
+                setattr(self, field.field_name, load_data)
+                current_position += field.length
+        except ValidationError:
+            # Fix bad values. We gotta cast this back to string, since that's
+            # what's expected
+            for field, value in six.iteritems(previous):
+                setattr(self, field, str(value))
+            raise

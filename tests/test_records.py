@@ -103,7 +103,7 @@ def test_record_load():
     assert record.first_field is None
     assert record.second_field is None
 
-    # # Valid load
+    # Valid load
     value = 'AA1234'
     record.load(value)
 
@@ -111,3 +111,7 @@ def test_record_load():
     value = 'whatever'
     with pytest.raises(ValidationError):
         record.load(value)
+
+    # Test that previous values remain after failed validation
+    assert record.first_field == 'AA'
+    assert record.second_field == 1234

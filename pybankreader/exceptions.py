@@ -14,18 +14,6 @@ class ValidationError(Exception):
         return "{}: {}".format(self.field, self.message)
 
 
-class InvalidRecordError(Exception):
-    """
-    Exception wrapping the situation
-    """
-
-    position = None
-    record = None
-
-    def __init__(self, position, record, field):
-        pass
-
-
 class ConfigurationError(Exception):
     """
     Exception signifies a programmers error in setting up the reports

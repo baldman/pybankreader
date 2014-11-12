@@ -35,7 +35,7 @@ class BareTestReport(reports.Report):
     """
 
     header = TestRecord()
-    data = [TestRecord3()]
+    data = reports.CompoundRecord(TestRecord3)
     footer = TestRecord2()
 
     def hint_data(self, line):
@@ -93,8 +93,8 @@ def test_load(mock_report):
     # Data field
     assert isinstance(report.data, list)
     assert len(report.data) == 2
-    assert report.data[0] == 'first'
-    assert report.data[1] == 'second'
+    assert report.data[0].fifth == 'first'
+    assert report.data[1].fifth == 'second'
 
     # Footer field
     assert isinstance(report.footer, TestRecord2)
