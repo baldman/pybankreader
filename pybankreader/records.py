@@ -1,5 +1,5 @@
 import six
-from exceptions import ValidationError
+from pybankreader.exceptions import ValidationError
 from pybankreader.fields import Field
 
 

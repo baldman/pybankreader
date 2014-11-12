@@ -1,7 +1,8 @@
-from StringIO import StringIO
+from six import StringIO
 import datetime
-from formats.bbf.records import AdvmulHeaderRecord, AdvmuzRecord, AdvmulRecord
-from formats.bbf.reports import Advmul
+from pybankreader.formats.bbf.records import AdvmulHeaderRecord, AdvmuzRecord, \
+    AdvmulRecord
+from pybankreader.formats.bbf.reports import Advmul
 
 
 def test_advmul_report(advmul_report):

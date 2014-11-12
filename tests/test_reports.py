@@ -1,4 +1,4 @@
-from StringIO import StringIO
+from six import StringIO
 from pybankreader import fields, records
 from pybankreader import reports
 

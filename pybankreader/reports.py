@@ -1,8 +1,8 @@
 import inspect
 import six
 
-from records import Record
-import exceptions
+from pybankreader.records import Record
+import pybankreader.exceptions
 
 
 class CompoundRecord(Record):
@@ -99,7 +99,7 @@ class ReportBase(type):
             msg = "Your report '{}' must have at least one record". \
                 format(klazz)
 
-            raise exceptions.ConfigurationError(msg)
+            raise pybankreader.exceptions.ConfigurationError(msg)
 
         # Create the class isntance
         klazz_inst = super(ReportBase, mcs).__new__(mcs, klazz, bases, attrs)
@@ -168,9 +168,11 @@ class Report(six.with_metaclass(ReportBase, object)):
                     if not okay:
                         msg = "{} hint says that I should advance".\
                             format(curr_record)
-                        raise exceptions.ValidationError('__hint__', msg)
+                        raise pybankreader.exceptions.ValidationError(
+                            '__hint__', msg
+                        )
                     record_obj.load(line.strip())
-                except exceptions.ValidationError as validation_error:
+                except pybankreader.exceptions.ValidationError as val_error:
                     try:
                         if is_list and compound_record.advance():
                             # Okay, we may just need to switch to different
@@ -180,7 +182,7 @@ class Report(six.with_metaclass(ReportBase, object)):
                             self._record_list[curr_record_idx+1]
                     except IndexError:
                         # Nope, this is the end and we're out of here
-                        raise validation_error
+                        raise val_error
                     else:
                         # Okay, there is hope, since there is another record
                         # in the record list
