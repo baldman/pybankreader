@@ -29,6 +29,12 @@ report, not the library itself)::
 
 You will find more information about how to use this library in the docs.
 
+How to Get It
+-------------
+
+This will be published to PyPI eventually, but currently, you will have to use
+``git clone``.
+
 What is the Projects Status
 ---------------------------
 
