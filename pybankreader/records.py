@@ -1,6 +1,6 @@
 import six
-from pybankreader.exceptions import ValidationError
-from pybankreader.fields import Field
+from .exceptions import ValidationError
+from .fields import Field
 
 
 class FieldProxy(object):

@@ -1,6 +1,6 @@
 from .records import HeaderRecord, LockRecord, AdvmulRecord, AdvmuzRecord, \
     AdvmulHeaderRecord
-from pybankreader.reports import Report, CompoundRecord
+from ...reports import Report, CompoundRecord
 
 
 class Advmul(Report):

@@ -1,4 +1,4 @@
-from pybankreader import fields, records
+from ... import fields, records
 
 
 class HeaderRecord(records.Record):
