@@ -2,6 +2,10 @@ from ... import records, fields
 
 
 class AccountRecord(records.Record):
+    """
+    The top-level record indicating an account. Usually, there will be only one
+    in the file
+    """
 
     BALANCE_SIGNUM = {
         '+': 1,
@@ -37,6 +41,10 @@ class AccountRecord(records.Record):
 
 
 class ItemRecord(records.Record):
+    """
+    The item record represents the change of sum of money (i.e. money order)
+    and associated information
+    """
 
     CURRENCY_CODES = {
         '0030': 'AUD',
@@ -82,15 +90,31 @@ class ItemRecord(records.Record):
 
 
 class ItemInfoRecord(records.Record):
+    """
+    An optional informational record for the money transfer
+    """
     header = fields.RegexField(length=3, required=True, regex='076')
     transaction_id = fields.CharField(length=26, required=True)
     date = fields.TimestampField(length=6, required=True, format='%d%m%y')
     comment = fields.CharField(length=93, required=True)
 
 
-class ItemRemmitance1(records.Record):
-    pass
+class ItemRemittance1Record(records.Record):
+    """
+    An optional informational record (first) when a remmitance advice is issued
+    """
+    header = fields.RegexField(length=3, required=True, regex='078')
+    av1 = fields.CharField(length=35, required=True)
+    av2 = fields.CharField(length=35, required=True)
+    fill = fields.CharField(length=55, required=False)
 
 
-class ItemRemittance2(records.Record):
-    pass
+class ItemRemittance2Record(records.Record):
+    """
+    An optional informational record (second) when a remmitance advice is
+    issued
+    """
+    header = fields.RegexField(length=3, required=True, regex='079')
+    av3 = fields.CharField(length=35, required=True)
+    av4 = fields.CharField(length=35, required=True)
+    fill = fields.CharField(length=55, required=False)

@@ -12,8 +12,8 @@ class ValidationError(Exception):
         self.message = message
 
     def __str__(self):
-        return "{}: {}\nCONTEXT: {}".format(self.field, self.message,
-                                            self.context)
+        return u"{}: {}\nCONTEXT: {}".format(self.field, self.message,
+                                             self.context)
 
 
 class ConfigurationError(Exception):

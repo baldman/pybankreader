@@ -64,7 +64,7 @@ class Field(object):
             )
 
         if len(value) > self.length:
-            msg = "Value '{}' exceeds maximum length of {}".format(
+            msg = u"Value '{}' exceeds maximum length of {}".format(
                 value, self.length
             )
             raise ValidationError(self._field_name, msg)
@@ -118,7 +118,9 @@ class CharField(Field):
     """
     CharField just uses the Field superclass directly for now, nothing special
     """
-    pass
+    
+    def _set_value(self, value):
+        super(CharField, self)._set_value(unicode(value))
 
 
 class RegexField(Field):
@@ -147,12 +149,13 @@ class RegexField(Field):
         :param strin value: The value to be stored in the field
         :raises ValidationError: Value is not valid
         """
+        value = unicode(value)
         super(RegexField, self)._set_value(value)
         if self._value is None:
             return
 
         if re.match(self._regex, value) is None:
-            msg = "Value '{}' does not match the regex pattern '{}'".format(
+            msg = u"Value '{}' does not match the regex pattern '{}'".format(
                 value, self._regex
             )
             self._value = None
@@ -238,6 +241,6 @@ class TimestampField(Field):
         try:
             self._value = datetime.strptime(value, self._format)
         except ValueError as e:
-            msg = "Value '{}' cannot be parsed to date using format '{}'. " \
-                  "Error is: {}".format(value, self._format, str(e))
+            msg = u"Value '{}' cannot be parsed to date using format '{}'. " \
+                  u"Error is: {}".format(value, self._format, str(e))
             raise ValidationError(self._field_name, msg)

@@ -1,6 +1,6 @@
 import datetime
 from pybankreader.formats.gpc.records import AccountRecord, ItemRecord, \
-    ItemInfoRecord
+    ItemInfoRecord, ItemRemittance1Record, ItemRemittance2Record
 
 
 def test_account_record(gpc_account_record):
@@ -67,3 +67,31 @@ def test_iteminfo_record(gpc_iteminfo_record):
     assert rec.transaction_id == '0000000000000000IBASSR8486'
     assert rec.date == datetime.datetime(2014, 9, 1, 0, 0)
     assert rec.comment == '683, 684'
+
+
+def test_itemremittance1_record(gpc_remittance1_record):
+    """
+    Try to load the first remmitance info record and test that it actually
+    loads it without exceptions
+    """
+    rec = ItemRemittance1Record()
+    rec.load(gpc_remittance1_record)
+
+    assert rec.header == '078'
+    assert rec.av1 == '2.250,00 EUR 1,000000'
+    assert rec.av2 == 'GB85HOAB15980093333120'
+    assert rec.fill is None
+
+
+def test_itemremittance2_record(gpc_remittance2_record):
+    """
+    Try to load the second remmitance info record and test that it actually
+    loads it without exceptions
+    """
+    rec = ItemRemittance2Record()
+    rec.load(gpc_remittance2_record)
+
+    assert rec.header == '079'
+    assert rec.av3 == 'Cause Celeb, Olivia Joules, Slovak'
+    assert rec.av4 == 'Aitken Alexander Associates Ltd.'
+    assert rec.fill is None

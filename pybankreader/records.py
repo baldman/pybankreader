@@ -140,7 +140,7 @@ class Record(six.with_metaclass(RecordBase, object)):
                 current_position += field.length
         except ValidationError as error:
             ctx = data[current_position-10:current_position+field.length+10]
-            error.context = "{}\n{}^".format(ctx, " "*(10+9))
+            error.context = u"{}\n{}^".format(ctx, " "*(10+9))
 
             # Fix bad values. We gotta cast this back to string, since that's
             # what's expected
