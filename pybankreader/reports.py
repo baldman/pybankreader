@@ -190,12 +190,20 @@ class Report(six.with_metaclass(ReportBase, object)):
                 else:
                     break
 
+            # Process hook
+            process_method = getattr(self, 'process_{}'.format(curr_record))
+            processed = process_method(record_obj)
+            if processed is None:
+                if is_list:
+                    compound_record.reset()
+                continue
+
             # If the datum is supposed to be in a list, we need to put it there
             # as such. Otherwise, just set the attribute
             if is_list:
                 data_list = getattr(self, curr_record)
-                data_list.append(record_obj)
+                data_list.append(processed)
                 # The order of records in compound record is non-linear
                 compound_record.reset()
             else:
-                setattr(self, curr_record, record_obj)
+                setattr(self, curr_record, processed)

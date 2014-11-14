@@ -12,6 +12,9 @@ class ValidationError(Exception):
         self.message = message
 
     def __str__(self):
+        """
+        Display with an enhanced context informations
+        """
         return u"{}: {}\nCONTEXT: {}".format(self.field, self.message,
                                              self.context)
 

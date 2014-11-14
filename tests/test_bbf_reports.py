@@ -1,13 +1,13 @@
 from six import StringIO
 import datetime
-from pybankreader.formats.bbf.records import AdvmulHeaderRecord, AdvmuzRecord, \
+from pybankreader.formats.bbf.records import AdvmulHeaderRecord, AdvmuzRecord,\
     AdvmulRecord
-from pybankreader.formats.bbf.reports import Advmul
+from pybankreader.formats.bbf.reports import AdvmulReport
 
 
 def test_advmul_report(advmul_report):
     file_like = StringIO(advmul_report)
-    report = Advmul(file_like)
+    report = AdvmulReport(file_like)
 
     # Header Record
     assert report.header.edi_msg == 'HEADER'

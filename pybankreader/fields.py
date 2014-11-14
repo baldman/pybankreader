@@ -225,6 +225,15 @@ class TimestampField(Field):
     _format = None
 
     def __init__(self, format, *args, **kwargs):
+        """
+        Initialize the field with datetime format mask
+
+        :param format: datetime format mask that ``datetime.strptime`` can
+            parse
+        :param list args: args
+        :param dict kwargs: kwargs
+        :return:
+        """
         super(TimestampField, self).__init__(*args, **kwargs)
         self._format = format
 

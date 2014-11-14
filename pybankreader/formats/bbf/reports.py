@@ -3,7 +3,7 @@ from .records import HeaderRecord, LockRecord, AdvmulRecord, AdvmuzRecord, \
 from ...reports import Report, CompoundRecord
 
 
-class Advmul(Report):
+class AdvmulReport(Report):
 
     header = HeaderRecord()
     data = CompoundRecord(AdvmulHeaderRecord, AdvmulRecord, AdvmuzRecord)

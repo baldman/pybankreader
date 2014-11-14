@@ -2,13 +2,20 @@ import datetime
 from six import StringIO
 from pybankreader.formats.gpc.records import AccountRecord, ItemRecord, \
     ItemInfoRecord, ItemRemittance1Record, ItemRemittance2Record
-from pybankreader.formats.gpc.reports import Account
+from pybankreader.formats.gpc.reports import AccountReport, Account, \
+    AccountItem
 
 
 def test_account_report(gpc_report):
     file_like = StringIO(gpc_report.decode('utf-8'))
 
-    report = Account(file_like)
+    report = AccountReport()
+    # We need to patch the account report not to screw plain record loading
+    original_process = AccountReport.process_data
+    AccountReport.process_data = lambda self, record: record
+
+    # Load'n'test
+    report.load(file_like)
 
     account_rec = report.data[0]
     item_rec = report.data[1]
@@ -44,3 +51,42 @@ def test_account_report(gpc_report):
     assert item_remittance2_rec.av4 == u'ALBATROS MEDIA A.S.'
 
     assert len(report.data) == 21
+
+    # Undo the patch
+    AccountReport.process_data = original_process
+
+
+def test_account_processing(gpc_report):
+
+    file_like = StringIO(gpc_report.decode('utf-8'))
+    report = AccountReport(file_like)
+
+    # Test coercing to accounts
+    for account in report.data:
+        assert isinstance(account, Account)
+
+    # We know we have one
+    test_acc = report.data[0]
+    assert len(test_acc.items) == 6
+
+    # Test the proxy
+    assert test_acc.name == 'KRISTIN OLSON LITERA'
+
+    for x in test_acc.items:
+        assert isinstance(x, AccountItem)
+
+    test_item = test_acc.items[0]
+
+    # Test aggregation
+    for x in ['info', 'rem1', 'rem2']:
+        assert hasattr(test_item, x)
+
+    assert test_item.currency_iso_code == 826
+    assert test_item.constant_symbol == 55000000
+    assert test_item.name == u'ALBATROS MEDIA A.S.'
+
+    assert test_item.info.date == datetime.datetime(year=2014, day=26, month=9)
+    assert test_item.info.comment == u'OP00140925501199'
+
+    assert test_item.rem1.av1 == u'34,11 GBP 1,000000'
+    assert test_item.rem1.av2 == u'CZ6555000000005081107266'
