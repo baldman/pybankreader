@@ -104,6 +104,8 @@ In this case, the report would look like this::
 
 Now the library is able to pass everything as a sequence.
 
+.. _advancement-hinting:
+
 Advancement Hinting
 -------------------
 There are rather unfortunate situations, when the library gets confused as to
@@ -169,7 +171,7 @@ The best example would we a situation, where your data is either hierarchical
 will still represent each line "type" as an individual record, but you have
 the option to change, how the data is saved.
 
-First, in a similar vein as :ref:`Advancement Hinting`, there is a set of
+First, in a similar vein as :ref:`advancement-hinting`, there is a set of
 default methods called ``process_<record>``. What these do is that they take a
 parsed record and return it, nothing more. You are free to override those
 methods and change the behavior. You can obviously do whatever you need with

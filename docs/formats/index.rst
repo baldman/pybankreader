@@ -46,3 +46,51 @@ GPC
 
 .. note:: This report **does** use record processing
 
+
+The GPC report is rather simplistic, it represents a transaction on an account.
+Mind that you can have more than one account in the file. Also, one transaction
+record can have up to 3 different additional records bound to them. Therefore,
+this report uses recor processing to recreate this hierarchy in memory.
+
+The report is defined as such::
+
+    class AccountReport(Report):
+
+        data = CompoundRecord(AccountRecord, ItemRecord, ItemInfoRecord,
+                              ItemRemittance1Record, ItemRemittance2Record)
+
+You can see that this report has everything in multiple occurences, so, we use
+the ``process_data`` method to split it such that we have this hierarchy on the
+``AccountReport`` instance::
+
+
+    data[] <-- a list of Account objects (proxy to AccountRecord)
+      - item  <-- AccountItem obejct (proxy to ItemRecord)
+        - info <-- ItemInfoRecord
+        - rem1 <-- ItemRemittance1Record
+        - rem2 <-- ItemRemittance2Record
+      - item
+        - info
+        - rem1
+        - rem2
+      - item
+        - info
+        - rem1
+        - rem2
+
+
+Since both ``Account`` and ``AccountItem`` classes use
+:ref:py:`pybankreader.utils.ProxyMixin` to proxy the access to their internal
+records, you can still use the dot syntax to access their fields, like this::
+
+    for account in report.data:
+        print account.new_balance
+        for transaction in account.items:
+            print trasaction.amount
+            # Accessing ItemInfoRecord...
+            print transaction.info.date
+
+
+See :py:mod:`pybankreader.formats.gpc.records` for detailed list of fields
+available on each of those records and consult official field description from
+the vendor.
