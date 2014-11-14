@@ -15,4 +15,3 @@ Contents:
    fields
    records
    reports
-   example
