@@ -20,6 +20,29 @@ official documentation for fields here_.
 BBF
 ---
 
+.. note:: This report **does not** use record processing
+
+The BBF format has two basic categories. Advmul/Advmuz records for remittance
+advices and such, and Finsta records for transactions. Currently, the report
+supports only Advmul/Advmuz records in a single report calld ``BBFAdvmul``
+
+The report is defined as such::
+
+
+    class AdvmulReport(Report):
+        header = HeaderRecord()
+        data = CompoundRecord(AdvmulHeaderRecord, AdvmulRecord, AdvmuzRecord)
+        lock = LockRecord()
+
+``header`` and ``lock`` records contain some metadata, whereas the ``data``
+list contains individual records. See
+:py:mod:`pybankreader.formats.bbf.records` for detailed list of fields
+available on each of those records and consult official field description from
+the vendor.
+
 
 GPC
 ---
+
+.. note:: This report **does** use record processing
+

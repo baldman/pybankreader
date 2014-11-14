@@ -175,7 +175,7 @@ parsed record and return it, nothing more. You are free to override those
 methods and change the behavior. You can obviously do whatever you need with
 the processed record, and you can either return an object
 (or the record itself), if you wish it to be loaded in the ``report.record``
-field, or you may return ``None`` and therefore, the record will __not__ be
+field, or you may return ``None`` and therefore, the record will **not** be
 saved in the report.
 
 So to go with an example using our colors, let's have a file like this::
