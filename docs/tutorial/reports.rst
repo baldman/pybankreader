@@ -46,15 +46,14 @@ named ``color_file.txt``::
         report = ColorReport(fl)
 
         print report.header.user_name
-
-    >>> "tomas.plesek"
-
         print report.header.export_date
-    >>> datetime.datetime(2014, 9, 31, 12, 32, 25)
-
         print report.color.color_name
-    >>> "bluish"
 
+... which produces this output::
+
+    "tomas.plesek"
+    datetime.datetime(2014, 9, 31, 12, 32, 25)
+    "bluish"
 
 Easy. Now, what if we would have our original file like this?::
 
@@ -78,15 +77,16 @@ Now, with this, you can now access your data like this::
 
     report = ColorReport(fl)
     print report.header.user_name
-    >>> "tomas.plesek"
 
     for color in report.data:
         print color.color_name
 
+... which produces this outout::
+
+    >>> "tomas.plesek"
     >>> "bluish"
     >>> "redish"
     >>> "greenish"
-
 
 In this manner, you can also take care of situations, where you have multiple
 types of records, that are repeating::
@@ -110,16 +110,15 @@ There are rather unfortunate situations, when the library gets confused as to
 whether it's on another record type. Imagine the situation, where you would
 have two records like this::
 
-    class CharRecord(Record):
+    from pybankreader.records import Record
+    from pybankreader import fields
 
+    class CharRecord(Record):
         name = fields.CharField(length=10, required=True)
 
 
     class FooterRecord(Record)
-
-        footer = fields.RegexField(
-            length=10, required=True, regex="AAAAZZAAAA"
-        )
+        footer = fields.RegexField(length=10, required=True, regex="AAAAZZAAAA")
 
 Now you create a report out of these like it's obvious::
 
@@ -160,3 +159,81 @@ And now the report will get parsed successfully.
 
 Custom Processing
 -----------------
+
+The last nice feature of pybankreader is the ability to custom-process data as
+they're being parsed. This way, you can build complex parsed structures in
+memory if you want to.
+
+The best example would we a situation, where your data is either hierarchical
+(yet presented in a linear fashion as multiple records), or multi-line. You
+will still represent each line "type" as an individual record, but you have
+the option to change, how the data is saved.
+
+First, in a similar vein as :ref:`Advancement Hinting`, there is a set of
+default methods called ``process_<record>``. What these do is that they take a
+parsed record and return it, nothing more. You are free to override those
+methods and change the behavior. You can obviously do whatever you need with
+the processed record, and you can either return an object
+(or the record itself), if you wish it to be loaded in the ``report.record``
+field, or you may return ``None`` and therefore, the record will __not__ be
+saved in the report.
+
+So to go with an example using our colors, let's have a file like this::
+
+    140931123225tomas.plesek
+    #12aacc bluish
+    #e50f2c redish
+
+
+Suppose now that those two colors are not single colors, but they represent a
+gradient together. How do we create a report for this?::
+
+    class GradientReport(Report):
+
+        header = HexNameRecord()
+        data = CompoundRecord(ColorRecord)
+
+        ticktock = True
+        """
+        This is a custom field. Since it's not a record, the libary will
+        leave it alone
+        """
+
+        def process_data(self, record)
+            """
+            Just a stupid method of how to populate a custom class. Note
+            that we're returning that custom class, not the ColorRecord!
+            """
+            if ticktock:
+                gradient = Gradient()
+                gradient.start = record
+                ticktock = False
+                return gradient
+            else:
+                self.data[-1].end = record
+                ticktock = True
+                return None
+
+    class Gradient(object):
+
+        start = None
+        end = None
+
+        def __str__(self):
+            print("{} -> {}".format(
+                self.start.hex_color, self.end_hex_color
+            )
+
+Okay, and now if you do this::
+
+    report = GradientReport(file_like)
+    for x in data:
+        print(x)
+        print(type(x))
+
+You will get::
+
+    "#12aacc -> #e50f2c"
+    <class pybankreader.examples.Gradient>
+
+Neat, huh?
