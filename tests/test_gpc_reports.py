@@ -7,7 +7,7 @@ from pybankreader.formats.gpc.reports import AccountReport, Account, \
 
 
 def test_account_report(gpc_report):
-    file_like = StringIO(gpc_report.decode('utf-8'))
+    file_like = StringIO(gpc_report)
 
     report = AccountReport()
     # We need to patch the account report not to screw plain record loading
@@ -58,7 +58,7 @@ def test_account_report(gpc_report):
 
 def test_account_processing(gpc_report):
 
-    file_like = StringIO(gpc_report.decode('utf-8'))
+    file_like = StringIO(gpc_report)
     report = AccountReport(file_like)
 
     # Test coercing to accounts

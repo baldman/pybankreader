@@ -33,6 +33,7 @@ Contents:
    :maxdepth: 2
 
    tutorial/index
+   formats/index
    api/index
 
 Indices and tables
