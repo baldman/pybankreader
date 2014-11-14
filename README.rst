@@ -2,7 +2,7 @@ Pybankreader
 ============
 
 License
-    MIT
+    BSD
 Python Compatibility
     Python 2.7 & Python 3.4
 
