@@ -76,10 +76,20 @@ class ReportBase(type):
 
         # Prepare the stub for `process_<field>_` methods
         def _process_stub(self, record):
+            """
+            Default process method just returning the record back
+
+            :return Record: the record
+            """
             return record
 
         # Add hint methods, so they can indicate that a field should advance
         def _field_hint(self, line):
+            """
+            Default hint method always returning True
+
+            :return bool: Always True
+            """
             return True
 
         methods = {}

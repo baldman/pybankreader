@@ -8,3 +8,12 @@ pybankreader.formats.gpc.records module
     :members:
     :undoc-members:
     :show-inheritance:
+
+
+pybankreader.formats.gpc.reports module
+---------------------------------------
+
+.. automodule:: pybankreader.formats.gpc.reports
+    :members:
+    :undoc-members:
+    :show-inheritance:

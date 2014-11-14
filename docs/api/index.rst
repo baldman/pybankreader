@@ -36,3 +36,20 @@ pybankreader.reports module
     :members:
     :undoc-members:
     :show-inheritance:
+
+pybankreader.utils module
+-------------------------
+
+.. automodule:: pybankreader.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: pybankreader
+    :members:
+    :undoc-members:
+    :show-inheritance:
