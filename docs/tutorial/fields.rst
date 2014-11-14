@@ -1,12 +1,12 @@
 Fields
 ======
 
-Using Fields
-------------
 As said earlier, fields are the most atomic part of the library. They are the
 building blocks for inidividual records.
 
-Field serves two purposes:
+Using Fields
+------------
+A Field serves two purposes:
 
   * validation of data
   * automatic coercion to type
