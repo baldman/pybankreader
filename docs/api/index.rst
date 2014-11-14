@@ -1,4 +1,4 @@
-pybankreader API
+Pybankreader API
 ================
 
 .. toctree::

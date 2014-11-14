@@ -48,8 +48,8 @@ that is to read two bank formats:
 
 If needed, other formats will follow.
 
-Mind that only one datasource was used for testing: CSOB a.s. If problems arise
-, fill an issue and ideally, attach data that does not work with this.
+Mind that only one datasource was used for testing: CSOB a.s. If problems
+arise, fill an issue and ideally, attach data that does not work with this.
 
 On top of that, it's very simple to create your own custom records and reports,
 since there is a un-healthy abundancy for bank export formats (see the docs for
