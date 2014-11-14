@@ -1,6 +1,11 @@
 Pybankreader
 ============
 
+License
+    MIT
+Python Compatibility
+    Python 2.7 & Python 3.4
+
 What is It
 ----------
 The `pybankreader` library is a toolkit to create model-based representation of
