@@ -105,7 +105,7 @@ class ItemRemittance1Record(records.Record):
     """
     header = fields.RegexField(length=3, required=True, regex='078')
     av1 = fields.CharField(length=35, required=True)
-    av2 = fields.CharField(length=35, required=True)
+    av2 = fields.CharField(length=35, required=False)
     fill = fields.CharField(length=55, required=False)
 
 
@@ -116,5 +116,5 @@ class ItemRemittance2Record(records.Record):
     """
     header = fields.RegexField(length=3, required=True, regex='079')
     av3 = fields.CharField(length=35, required=True)
-    av4 = fields.CharField(length=35, required=True)
+    av4 = fields.CharField(length=35, required=False)
     fill = fields.CharField(length=55, required=False)

@@ -140,8 +140,9 @@ class Report(six.with_metaclass(ReportBase, object)):
         :param file_like: the file from which to read data
         """
         for key, record_klazz in six.iteritems(self._record_map):
-            if isinstance(record_klazz, list):
-                setattr(self, key, [])
+            if isinstance(record_klazz, CompoundRecord):
+                # Do not forget to reset bailed imports!
+                record_klazz.reset()
 
         # If no data field is defined, make it a list anyway
         self.data = self.data or []
