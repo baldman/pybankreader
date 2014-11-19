@@ -84,7 +84,7 @@ class ItemRecord(records.Record):
     valuta = fields.IntegerField(length=6, required=True)
     name = fields.CharField(length=20, required=True)
     separator = fields.RegexField(length=1, required=True, regex='0')
-    currency_iso_code = fields.IntegerField(length=4, required=True)
+    currency_iso_code = fields.CharField(length=4, required=True)
     clearance_date = fields.TimestampField(length=6, required=True,
                                            format='%d%m%y')
 

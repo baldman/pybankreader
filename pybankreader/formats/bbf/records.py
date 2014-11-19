@@ -61,7 +61,7 @@ class AdvmulRecord(records.Record):
         "55": 'rejected collection',
     }
 
-    TRASNACT_TYPE = {
+    TRANSACT_TYPE = {
         'C': 'credit transaction',
         'D': 'debit transaction',
         'CR': 'cancelled credit transaction',
@@ -88,7 +88,7 @@ class AdvmulRecord(records.Record):
                                          format='%Y%m%d')
     date_process_other = fields.TimestampField(length=8, required=False,
                                                format='%Y%m%d')
-    trasnact_type = fields.RegexField(length=2, required=True,
+    transact_type = fields.RegexField(length=2, required=True,
                                       regex='C|D|CR|DR')
     amount = fields.DecimalField(length=16, required=True)
     currency = fields.CharField(length=3, required=True)
