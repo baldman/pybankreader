@@ -27,6 +27,11 @@ report, not the library itself)::
 
 You will find more information about how to use this library in the docs.
 
+You can get the library as a package from PyPI or source from Github:
+
+ * Using ``pip``: ``pip install pybankreader``
+ * Source from Github: ``git clone https://github.com/baldman/pybankreader.git``
+
 Contents:
 
 .. toctree::

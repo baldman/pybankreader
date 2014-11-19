@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pybankreader',
-    version='0.1',
+    version='0.2',
     url='http://github.com/baldman/pybankreader',
     license='BSD',
     author=u'Tomáš Plešek',

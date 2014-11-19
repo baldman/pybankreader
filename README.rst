@@ -37,8 +37,10 @@ You will find more information about how to use this library in the docs.
 How to Get It
 -------------
 
-This will be published to PyPI eventually, but currently, you will have to use
-``git clone``.
+Two options:
+
+ * Use ``pip``: ``pip install pybankreader``
+ * Or clone from Github if you want to: ``git clone https://github.com/baldman/pybankreader.git``
 
 What is the Projects Status
 ---------------------------

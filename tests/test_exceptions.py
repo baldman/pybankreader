@@ -1,4 +1,4 @@
-from StringIO import StringIO
+from six import StringIO
 import pytest
 from pybankreader.formats.gpc.reports import AccountReport
 from pybankreader.exceptions import ValidationError
@@ -8,8 +8,6 @@ def test_exception_history(advmul_report):
     file_like = StringIO(advmul_report)
     with pytest.raises(ValidationError) as err:
         AccountReport(file_like)
-
-    print err.value
 
     expected_trace = \
         "header @ <0,3>: Value 'T26' does not match the regex pattern '079' " \
