@@ -131,19 +131,21 @@ class Record(six.with_metaclass(RecordBase, object)):
         """
         current_position = 0
         previous = {}
+        start, end = 0, 0
 
         try:
             for field in self._fields:
-                load_data = data[current_position:current_position+field.length]
+                start, end = current_position, current_position+field.length
+                load_data = data[start:end]
                 previous[field.field_name] = getattr(self, field.field_name)
                 setattr(self, field.field_name, load_data)
                 current_position += field.length
         except ValidationError as error:
-            ctx = data[current_position-10:current_position+field.length+10]
-            error.context = u"{}\n{}^".format(ctx, " "*(10+9))
-
+            error.interval = (start, end)
+            error.data = data
+            error.record = self.__class__.__name__
             # Fix bad values. We gotta cast this back to string, since that's
-            # what's expected
+            # what's expected (not exactly nice, right...)
             for field, value in six.iteritems(previous):
                 try:
                     setattr(self, field, str(value))

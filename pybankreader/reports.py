@@ -127,6 +127,12 @@ class ReportBase(type):
 
 class Report(six.with_metaclass(ReportBase, object)):
 
+    _last_exception = None
+    """
+    This stores history of exceptions, so we can trace the error more
+    accurately
+    """
+
     data = None
     """
     The actual data field. All reports will have at least this one defined.
@@ -184,6 +190,12 @@ class Report(six.with_metaclass(ReportBase, object)):
                         )
                     record_obj.load(line.strip())
                 except exceptions.ValidationError as val_error:
+                    # Save the exception...
+                    if self._last_exception:
+                        val_error.parent = self._last_exception
+                    self._last_exception = val_error
+
+                    # And continue about our business
                     try:
                         if is_list and compound_record.advance():
                             # Okay, we may just need to switch to different
@@ -200,6 +212,9 @@ class Report(six.with_metaclass(ReportBase, object)):
                         curr_record_idx += 1
                 else:
                     break
+
+            # Clear exception stack
+            self._last_exception = None
 
             # Process hook
             process_method = getattr(self, 'process_{}'.format(curr_record))

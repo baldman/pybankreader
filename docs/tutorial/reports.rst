@@ -106,6 +106,43 @@ Now the library is able to pass everything as a sequence.
 
 .. _advancement-hinting:
 
+Validation Errors
+-----------------
+Of course, you will hit a situation where either the data does not conform to
+your defined report, or you made a mistake when you constructed either the
+report or individual records.
+
+In such a case, instance of :py:exc:`pybankreader.exceptions.ValidationError`
+will be thrown. To make the debugging easier, the validation does have a nice
+``__str__`` method, that will print a wider context for you to debug, like so::
+
+    ValidationError: header @ <0,3>: Value 'T26' does not match the regex pattern '079' for data: T263310  HEADER 0001.0000BBCSOB
+    [0] >>> AccountRecord/header @ <0,3>: Value 'T26' does not match the regex pattern '074'
+    [1] >>> ItemRecord/header @ <0,3>: Value 'T26' does not match the regex pattern '075'
+    [2] >>> ItemInfoRecord/header @ <0,3>: Value 'T26' does not match the regex pattern '076'
+    [3] >>> ItemRemittance1Record/header @ <0,3>: Value 'T26' does not match the regex pattern '078'
+    [4] >>> ItemRemittance2Record/header @ <0,3>: Value 'T26' does not match the regex pattern '079'
+
+
+This should give you enough information to hunt down the problem. The first
+line is the last ValidationError that occured. The format is to be interpreted
+as such::
+
+ field_name @ <start_position,end_position>: 'Exception_message' for data: line_of_data_tried_to_be_loaded_into_a_record
+
+You may stumble upon situations, as in our example, when there is a followup
+printout of successive validation errors. This is to get you to the underlying
+problem, because the system tries all record types in a report sequentially,
+until it gives up. So, if the problem is in the first record, the system will
+still complain about the *last* one, since that's where it finally decided it
+cannot parse the source.
+
+This stack is reset once every succesfull parsing of a record.
+
+
+.. note:: The error message will be the *last* in the numbered stack trace, so
+    in the example case, it's number 4.
+
 Advancement Hinting
 -------------------
 There are rather unfortunate situations, when the library gets confused as to

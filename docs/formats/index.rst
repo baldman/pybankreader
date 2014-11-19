@@ -80,7 +80,7 @@ the ``process_data`` method to split it such that we have this hierarchy on the
 
 
 Since both ``Account`` and ``AccountItem`` classes use
-:ref:py:`pybankreader.utils.ProxyMixin` to proxy the access to their internal
+:py:class:`pybankreader.utils.ProxyMixin` to proxy the access to their internal
 records, you can still use the dot syntax to access their fields, like this::
 
     for account in report.data:
