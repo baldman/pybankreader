@@ -6,7 +6,7 @@ License
 Python Compatibility
     Python 2.7 & Python 3.4
 
-What is It
+What Is It
 ----------
 The `pybankreader` library is a toolkit to create model-based representation of
 structured exported plain-text files.
@@ -42,7 +42,7 @@ Two options:
  * Use ``pip``: ``pip install pybankreader``
  * Or clone from Github if you want to: ``git clone https://github.com/baldman/pybankreader.git``
 
-What is the Projects Status
+What Is the Projects Status
 ---------------------------
 
 I'd say that library is in something like limited production use.
@@ -62,6 +62,6 @@ On top of that, it's very simple to create your own custom records and reports,
 since there is a un-healthy abundancy for bank export formats (see the docs for
 that).
 
-Where is the Documentation
+Where Is the Documentation
 --------------------------
 http://pybankreader.readthedocs.org/, read the docs of course.
