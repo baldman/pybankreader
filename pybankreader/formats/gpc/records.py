@@ -78,9 +78,9 @@ class ItemRecord(records.Record):
     amount = fields.IntegerField(length=12, required=True)
     accounting_code = fields.RegexField(length=1, required=True,
                                         regex='1|2|4|5')
-    variable_symbol = fields.IntegerField(length=10, required=True)
-    constant_symbol = fields.IntegerField(length=10, required=True)
-    specific_symbol = fields.IntegerField(length=10, required=True)
+    variable_symbol = fields.CharField(length=10, required=True)
+    constant_symbol = fields.CharField(length=10, required=True)
+    specific_symbol = fields.CharField(length=10, required=True)
     valuta = fields.IntegerField(length=6, required=True)
     name = fields.CharField(length=20, required=True)
     separator = fields.RegexField(length=1, required=True, regex='0')
