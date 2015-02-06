@@ -115,6 +115,6 @@ class ItemRemittance2Record(records.Record):
     issued
     """
     header = fields.RegexField(length=3, required=True, regex='079')
-    av3 = fields.CharField(length=35, required=True)
+    av3 = fields.CharField(length=35, required=False)
     av4 = fields.CharField(length=35, required=False)
     fill = fields.CharField(length=55, required=False)
