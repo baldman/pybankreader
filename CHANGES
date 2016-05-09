@@ -1,3 +1,8 @@
+Version 0.2.3
+-------------
+  * Fix date field not to crash when not required
+  * Fix invalid tests
+
 Version 0.2.2
 -------------
   * Change av3 to non-required field on ItemRemmitance2 record type for GPC report

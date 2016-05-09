@@ -37,8 +37,8 @@ def test_account_report(gpc_report):
     assert account_rec.revenue_credit == 203414
 
     assert item_rec.account_no == u'0000000263847748'
-    assert item_rec.constant_symbol == 55000000
-    assert item_rec.specific_symbol == 4109388409
+    assert item_rec.constant_symbol == u'0055000000'
+    assert item_rec.specific_symbol == u'4109388409'
 
     assert item_info_rec.comment == u'OP00140925501199'
     assert item_info_rec.date == datetime.datetime(year=2014, month=9, day=26)
@@ -81,8 +81,8 @@ def test_account_processing(gpc_report):
     for x in ['info', 'rem1', 'rem2']:
         assert hasattr(test_item, x)
 
-    assert test_item.currency_iso_code == 826
-    assert test_item.constant_symbol == 55000000
+    assert test_item.currency_iso_code == '0826'
+    assert test_item.constant_symbol == '0055000000'
     assert test_item.name == u'ALBATROS MEDIA A.S.'
 
     assert test_item.info.date == datetime.datetime(year=2014, day=26, month=9)

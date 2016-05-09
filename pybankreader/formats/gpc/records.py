@@ -95,7 +95,7 @@ class ItemInfoRecord(records.Record):
     """
     header = fields.RegexField(length=3, required=True, regex='076')
     transaction_id = fields.CharField(length=26, required=True)
-    date = fields.TimestampField(length=6, required=True, format='%d%m%y')
+    date = fields.TimestampField(length=6, required=False, format='%d%m%y')
     comment = fields.CharField(length=93, required=False)
 
 

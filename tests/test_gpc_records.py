@@ -45,13 +45,13 @@ def test_item_record(gpc_item_record):
     assert rec.seq_no == 6061
     assert rec.amount == 225000
     assert rec.accounting_code == '1'
-    assert rec.variable_symbol == 0
-    assert rec.constant_symbol == 0
-    assert rec.specific_symbol == 3108539408
+    assert rec.variable_symbol == '0000000000'
+    assert rec.constant_symbol == '0000000000'
+    assert rec.specific_symbol == '3108539408'
     assert rec.valuta == 10914
     assert rec.name == 'Aitken Alexander Ass'
     assert rec.separator == '0'
-    assert rec.currency_iso_code == 978
+    assert rec.currency_iso_code == '0978'
     assert rec.clearance_date == datetime.datetime(2014, 9, 1, 0, 0)
 
 

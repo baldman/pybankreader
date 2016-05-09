@@ -247,6 +247,9 @@ class TimestampField(Field):
         try:
             self._value = datetime.strptime(value, self._format)
         except ValueError as e:
-            msg = u"Value '{}' cannot be parsed to date using format '{}'. " \
-                  u"Error is: {}".format(value, self._format, str(e))
-            raise ValidationError(self._field_name, msg)
+            if not self.required:
+                self._value = None
+            else:
+                msg = u"Value '{}' cannot be parsed to date using format '{}'. " \
+                      u"Error is: {}".format(value, self._format, str(e))
+                raise ValidationError(self._field_name, msg)
